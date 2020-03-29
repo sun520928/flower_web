@@ -19,4 +19,5 @@ def create_app():
 	app.register_blueprint(main)
 	app.register_blueprint(curve)
 	db.init_app(app)
+	db.create_all(app=app)
 	return app

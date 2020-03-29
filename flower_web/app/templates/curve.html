@@ -12,22 +12,35 @@
 	// 显示标题，图例和空的坐标轴
 	myChart.setOption({
 		title: {
-			text: '异步数据加载示例'
+			text: '传感器数据显示'
 		},
 		tooltip: {},
 		legend: {
-			data:['空气温度','空气湿度']
+			data:['空气最高温度', '空气最低温度', '空气最高湿度', '空气最低湿度']
 		},
 		xAxis: {
 			data: list(range(100))
 		},
-		yAxis: {},
+		yAxis: {
+			data: []
+		},
 		series: [{
-			name: '空气温度',
+			name: '空气最高温度',
 			type: 'line',
 			data: []
-		},{
-			name: '空气湿度',
+		},
+		{
+			name: '空气最低温度',
+			type: 'line',
+			data: []
+		},
+		{
+			name: '空气最高湿度',
+			type: 'line',
+			data: []
+		},
+		{
+			name: '空气最低湿度',
 			type: 'line',
 			data: []
 		}]
@@ -41,15 +54,24 @@
 
 		// 填入数据
 		myChart.setOption({
-			// xAxis: {
-			// 	data: list(range(100))
-			// },
+			yAxis: {
+				data: data.result.update_date
+			},
 			series: [{
-				name: '空气温度', // 根据名字对应到相应的系列
-				data: data.result.celsius.map(parseFloat) // 转化为数字（注意map）
-			},{
-				name: '空气湿度',
-				data: data.result.humidity.map(parseFloat)
+				name: '空气最高温度', // 根据名字对应到相应的系列
+				data: data.result.max_celsius.map(parseFloat) // 转化为数字（注意map）
+			},
+			{
+				name: '空气最低温度', // 根据名字对应到相应的系列
+				data: data.result.min_celsius.map(parseFloat) // 转化为数字（注意map）
+			},
+			{
+				name: '空气最高湿度',
+				data: data.result.max_humidity.map(parseFloat)
+			},
+			{
+				name: '空气最低湿度',
+				data: data.result.min_humidity.map(parseFloat)
 			}]
 		});
 	});
