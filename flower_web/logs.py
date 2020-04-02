@@ -8,7 +8,6 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask
 from config import config
 
-
 def setup_log(config_name):
 	# # 设置日志的的登记
 	# logging.basicConfig(level=config[config_name].LOG_LEVEL)
