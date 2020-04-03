@@ -49,7 +49,7 @@
 	myChart.showLoading(); // 显示加载动画
 
 	// 异步加载数据
-	$.get('/air').done(function (data) {
+	$.get('/air/info').done(function (data) {
 		myChart.hideLoading(); // 隐藏加载动画
 
 		// 填入数据
