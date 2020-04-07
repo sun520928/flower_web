@@ -1,7 +1,12 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/echarts.js') }}"></script>
+{% endblock %}
 
 {% block title %}
-{{ supper() }}
+Statistics
 {% endblock %}
 
 {% block body %}
@@ -19,7 +24,7 @@
 			data:['空气最高温度', '空气最低温度', '空气最高湿度', '空气最低湿度']
 		},
 		xAxis: {
-			data: list(range(100))
+			data: [Array(100).keys()]
 		},
 		yAxis: {
 			data: []
@@ -46,41 +51,50 @@
 		}]
 	});
 
-	myChart.showLoading(); // 显示加载动画
-
 	// 异步加载数据
 	$.get('/air/info').done(function (data) {
-		myChart.hideLoading(); // 隐藏加载动画
+		json_data = JSON.parse(data)
 
 		// 填入数据
 		myChart.setOption({
 			yAxis: {
-				data: data.result.update_date
+				data: Array(100).keys()
 			},
+			xAxis: {
+				data: json_data.result.update_date
+			},
+			legend: {
+                        data:['空气最高温度', '空气最低温度', '空气最高湿度', '空气最低湿度']
+                        },
 			series: [{
 				name: '空气最高温度', // 根据名字对应到相应的系列
-				data: data.result.max_celsius.map(parseFloat) // 转化为数字（注意map）
+				type: 'line',
+				data: json_data.result.max_celsius//.map(parseFloat) // 转化为数字（注意map）
 			},
 			{
 				name: '空气最低温度', // 根据名字对应到相应的系列
-				data: data.result.min_celsius.map(parseFloat) // 转化为数字（注意map）
+				type: 'line',
+				data: json_data.result.min_celsius//.map(parseFloat) // 转化为数字（注意map）
 			},
 			{
 				name: '空气最高湿度',
-				data: data.result.max_humidity.map(parseFloat)
+				type: 'line',
+				data: json_data.result.max_humidity//.map(parseFloat)
 			},
 			{
 				name: '空气最低湿度',
-				data: data.result.min_humidity.map(parseFloat)
+				type: 'line',
+				data: json_data.result.min_humidity//.map(parseFloat)
 			}]
 		});
 	});
 	</script>
 {% endblock %}
 
-
-{% block js %}
-{{ supper() }}
-<script src="{{ url_for('static', filename='js/echarts.js') }}"></script>
+{% block css %}
+{{ super() }}
 {% endblock %}
+
+
+
 
