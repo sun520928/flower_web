@@ -1,15 +1,17 @@
 # -*- coding:utf-8 -*-
-from flask import Blueprint, request, render_template, redirect
-from app import db
-from sqlalchemy import func, desc
-import json
-from app.models.air import Air
-from app.models.identification import Identification
 import logging
 import datetime
+import json
+
+from flask import Blueprint, request, render_template, redirect
+from sqlalchemy import func, desc
+
+from app import db
+from app.models.air import Air
+from app.models.identification import Identification
+
 
 curve = Blueprint('curve', __name__)
-
 
 @curve.route("/air/", methods=["POST", "GET"])
 def air():

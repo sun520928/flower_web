@@ -7,9 +7,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-from .models import *
-from .views.main import main
-from .views.curve import curve
+from app.models.air import Air
+from app.models.identification import Identification
+from app.models.user import User
+from app.models.plant import Plant
+from app.views.main import main
+from app.views.curve import curve
+from app.views.login import log_in
 
 #创建app
 def create_app():
@@ -18,6 +22,7 @@ def create_app():
 	app.debug = True
 	app.register_blueprint(main)
 	app.register_blueprint(curve)
+	app.register_blueprint(log_in)
 	db.init_app(app)
 	db.create_all(app=app)
 	return app
