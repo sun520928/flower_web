@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block title %}
-Statistics
+{{ super()}}
 {% endblock %}
 
 {% block body %}
@@ -24,10 +24,10 @@ Statistics
 			data:['空气最高温度', '空气最低温度', '空气最高湿度', '空气最低湿度']
 		},
 		xAxis: {
-			data: [Array(100).keys()]
+			data: []
 		},
 		yAxis: {
-			data: []
+			data: [...Array(100).keys()]
 		},
 		series: [{
 			name: '空气最高温度',
@@ -55,31 +55,47 @@ Statistics
 	$.get('/air/info').done(function (data) {
 		json_data = JSON.parse(data)
 
-		// 填入数据
 		myChart.setOption({
+			toolbox: {
+        		feature: {
+            		saveAsImage: {}
+        		}
+    		},
+			tooltip: {
+        		trigger: 'axis'
+    		},
+			grid: {
+        		left: '3%',
+        		right: '4%',
+        		bottom: '3%',
+        		containLabel: true
+    		},
 			yAxis: {
-				data: Array(100).keys()
+				type: 'value',
+				data: [...Array(100).keys()]
 			},
 			xAxis: {
+				type: 'category',
+				boundaryGap: false,
 				data: json_data.result.update_date
 			},
 			legend: {
-                        data:['空气最高温度', '空气最低温度', '空气最高湿度', '空气最低湿度']
-                        },
+				data:['空气最高温度', '空气最低温度', '空气最高湿度', '空气最低湿度']
+            },
 			series: [{
-				name: '空气最高温度', // 根据名字对应到相应的系列
+				name: '空气最高温度', 
 				type: 'line',
-				data: json_data.result.max_celsius//.map(parseFloat) // 转化为数字（注意map）
+				data: json_data.result.max_celsius
 			},
 			{
-				name: '空气最低温度', // 根据名字对应到相应的系列
+				name: '空气最低温度',
 				type: 'line',
-				data: json_data.result.min_celsius//.map(parseFloat) // 转化为数字（注意map）
+				data: json_data.result.min_celsius
 			},
 			{
 				name: '空气最高湿度',
 				type: 'line',
-				data: json_data.result.max_humidity//.map(parseFloat)
+				data: json_data.result.max_humidity
 			},
 			{
 				name: '空气最低湿度',
