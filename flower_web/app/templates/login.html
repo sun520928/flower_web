@@ -7,31 +7,6 @@
 
 {% block js %}
 {{ super() }}
-<script>
-	function login() {
-		var name = document.getElementById("inputEmail");
-		var pwd = document.getElementById("inputPassword");
-		var info = {"name": name.value, "pwd": pwd.value};
-		console.log(JSON.stringify(info));
-		
-		$.ajax({
-			type: "POST",
-            url: "/login",
-            data: JSON.stringify(info),
-			contentType: "application/json",
-            dataType: "json",
-            success: function(json) {
-				json_data = JSON.parse(json);
-				if (json_data.code == 200 && json_data.success) {
-					// window.location.href = "curve.html";
-				}
-				else {
-					confirm(json_data.result);
-				}
-            }
-        });
-	}
-</script>
 {% endblock %}
 
 {% block title %}
@@ -40,18 +15,18 @@
 
 {% block body %}
 <div class="container">
-	<form class="form-signin">
+	<form action="{{ url_for('log_in.login') }}" method="post" class="form-signin">
 	  <h2 class="form-signin-heading">Please sign in</h2>
 	  <label for="inputEmail" class="sr-only">Email address</label>
-	  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+	  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="" name="username">
 	  <label for="inputPassword" class="sr-only">Password</label>
-	  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+	  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" name="userpwd">
 	  <div class="checkbox">
 		<label>
 		  <input type="checkbox" value="remember-me"> Remember me
 		</label>
 	  </div>
-	  <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="login()">Sign in</button>
+	  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 	</form>
 </div>
 
