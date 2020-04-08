@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import os
 # from logging.config import dictConfig
 
 DB_USER = 'flower'
@@ -36,6 +37,10 @@ class BaseConfig(object):
 	SQLALCHEMY_POOL_RECYCLE = 3600 #s
 	# 追踪对象的修改并且发送信号
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+	SECRET_KEY = '123456'
+	
+	DEBUG = True
 
 
 class ProductionConfig(BaseConfig):

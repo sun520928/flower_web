@@ -1,11 +1,14 @@
 # -*- coding:utf-8 -*-
+import os
 from flask import Flask
+from flask_login import LoginManager
 #from flask_session import Session
 import pymysql
 pymysql.install_as_MySQLdb()
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+login_manager = LoginManager()
 
 from app.models.air import Air
 from app.models.identification import Identification
@@ -20,9 +23,18 @@ def create_app():
 	app = Flask(__name__)
 	app.config.from_object('config.DevelopmentConfig')
 	app.debug = True
+
 	app.register_blueprint(main)
 	app.register_blueprint(curve)
 	app.register_blueprint(log_in)
+
 	db.init_app(app)
 	db.create_all(app=app)
+
+	login_manager.login_view = "login"
+	login_manager.init_app(app)
 	return app
+
+@login_manager.user_loader
+def load_user(userid):
+	return User.query.get(int(userid))

@@ -6,9 +6,9 @@ from logging.handlers import TimedRotatingFileHandler
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask
-from config import config
 
-def setup_log(config_name):
+
+def setup_log():
 	# # 设置日志的的登记
 	# logging.basicConfig(level=config[config_name].LOG_LEVEL)
 	# # 创建日志记录器，设置日志的保存路径和每个日志的大小和日志的总大小

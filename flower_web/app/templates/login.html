@@ -9,15 +9,27 @@
 {{ super() }}
 <script>
 	function login() {
-		$.post('/login').done(function (data) {
-			json_data = JSON.parse(data);
-			if (json_data.code == 200 && json_data.success) {
-				window.location.href = "curve.html";
-			}
-			else {
-				confirm(json_data.result);
-			}
-		})
+		var name = document.getElementById("inputEmail");
+		var pwd = document.getElementById("inputPassword");
+		var info = {"name": name.value, "pwd": pwd.value};
+		console.log(JSON.stringify(info));
+		
+		$.ajax({
+			type: "POST",
+            url: "/login",
+            data: JSON.stringify(info),
+			contentType: "application/json",
+            dataType: "json",
+            success: function(json) {
+				json_data = JSON.parse(json);
+				if (json_data.code == 200 && json_data.success) {
+					// window.location.href = "curve.html";
+				}
+				else {
+					confirm(json_data.result);
+				}
+            }
+        });
 	}
 </script>
 {% endblock %}

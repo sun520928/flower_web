@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+from flask_login import UserMixin
+
 from app import db
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 	__tablename__ = 'user'
 
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True, index=True)
-	name = db.Column(db.String(32), nullable=False)
+	name = db.Column(db.String(32), unique=True, nullable=False)
 	pwd = db.Column(db.String(16), nullable=False)
 
 	def __init__(self, id, name, pwd):
