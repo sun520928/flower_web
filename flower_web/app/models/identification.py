@@ -12,4 +12,4 @@ class Identification(db.Model):
 		self.description = desp
 
 	def __repr__(self):
-		return '<Identification %d>' % (self.id, self.description)
+		return '<Identification %d> %s' % (self.id, self.description)

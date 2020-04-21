@@ -1,25 +1,19 @@
 <html lang="zh-CN">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-	<meta name="description" content="">
-	<meta name="author" content="">
-	<link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
-
+	<meta name="viewport" content="width=device-width" />
 	<title>{% block title %}Hello Flower{% endblock %}</title>
+
+	{% block css %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" />
+	<!-- Custom styles for this template -->
+	<!-- <link href="{{ url_for('static', filename='css/starter-template.css')}}" rel="stylesheet"> -->
+	{% endblock %}
 	
 	{% block js %}
 	<script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 	{% endblock %}
-
-	{% block css %}
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-	<!-- Custom styles for this template -->
-	<link href="{{ url_for('static', filename='css/starter-template.css')}}" rel="stylesheet">
-	{% endblock %}
+	
   </head>
 
   <body>
@@ -41,7 +35,7 @@
 			<li><a href="#about">About</a></li>
 			<li><a href="#contact">Contact</a></li>
 		  </ul>
-		</div><!--/.nav-collapse -->
+		</div>
 	  </div>
 	</nav>
 
@@ -51,7 +45,7 @@
 		<p class="lead">This project is for my flowers. I hope that the code and flowers I love can collide with each other to create a spark of passion, light up my life and warm my heart.</p>
 	  </div>
 
-	</div><!-- /.container -->
+	</div>
 	{% endblock %}
  
 

@@ -3,7 +3,8 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, jsonify
+from flask_login import login_required
 from sqlalchemy import func, desc
 
 from app import db
@@ -13,6 +14,7 @@ from app.models.identification import Identification
 
 curve = Blueprint('curve', __name__)
 
+@login_required
 @curve.route("/air/", methods=["POST", "GET"])
 def air():
 	if request.method == 'GET':
@@ -31,14 +33,14 @@ def air():
 		fahrenheit = float(data.get('fahrenheit'))
 		celsius = float(data.get('celsius'))
 		identification_id = int(data.get('id'))
+		
 
 		if humidity and fahrenheit and celsius and identification_id:
 			identi = Identification.query.filter_by(
 				id=identification_id).first()
 			if not identi:
 				ret['success'] = False
-				logging.info('identification_id=%d not existed.' %
-							 identification_id)
+				logging.info('identification_id=%d not existed.' % identification_id)
 			else:
 				air = Air(humidity, fahrenheit, celsius, identification_id)
 				db.session.add(air)
@@ -47,6 +49,8 @@ def air():
 
 		return json.dumps(ret, ensure_ascii=False)
 
+
+@login_required
 @curve.route("/air/info", methods=["GET"])
 def info():
 	ret = {}

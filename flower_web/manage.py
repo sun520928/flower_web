@@ -6,7 +6,7 @@ from app import create_app, db
 from logs import setup_log
 
 HOST = '0.0.0.0'
-PORT = 5000
+PORT = 4000
 
 app = create_app()
 manager = Manager(app)

@@ -10,8 +10,7 @@ class User(db.Model, UserMixin):
 	name = db.Column(db.String(32), unique=True, nullable=False)
 	pwd = db.Column(db.String(16), nullable=False)
 
-	def __init__(self, id, name, pwd):
-		self.id = id
+	def __init__(self, name, pwd):
 		self.name = name
 		self.pwd = pwd
 
