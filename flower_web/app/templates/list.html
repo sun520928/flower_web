@@ -15,6 +15,7 @@
 <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-table/dist/bootstrap-table.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-table/dist/extensions/editable/bootstrap-table-editable.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -22,13 +23,16 @@
 <div class="panel-body" style="padding-bottom:0px;">     
     <div id="toolbar" class="btn-group">
         <button id="btn_add" type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+            <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span>新增
         </button>
         <button id="btn_edit" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改
         </button>
         <button id="btn_delete" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+        </button>
+        <button id="btn_save" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>保存
         </button>
     </div>
     <table id="table"></table>
@@ -38,11 +42,50 @@
 function get_cols() {
     var cols_json = JSON.parse('{{headers|tojson}}');
     var cols = [];
+    cols.push({title: 'state', field: 'state', checkbox: true, align: 'center', valign: 'middle'});
     for(var i=0; i < cols_json.length; i++) {
         cols.push({title: cols_json[i]['title'], field: cols_json[i]['field'], align: cols_json[i]['align']});
     }
+    cols.push({title: '操作', align: 'center', valign: 'middle', formatter:"operateFormatter"})
     return cols;
 };
+
+function operateFormatter(value, row, index) {
+    return [
+    '<a href="javascript:modifyPer(' + row.id + ')" title="modify">' +
+    '<i class="glyphicon glyphicon-pencil"></i>修改' +
+    '</a>',
+    '<a class="remove" href="javascript:void(0)" title="remove">' +
+    '<i class="glyphicon glyphicon-remove"></i>删除' +
+    '</a>'
+    ].join('');
+}
+
+function getIdSelections() {
+    return $.map($('#table').bootstrapTable('getSelections'), function (row) {
+        return row.id
+    })
+};
+
+window.operateEvents = {
+    'click .modify': function (e, value, row, index) {
+      alert('You click like action, row: ' + JSON.stringify(row))
+    },
+    'click .remove': function (e, value, row, index) {
+        if(confirm("您确定删除第"+rowid+"行吗？")) {
+            $.ajax({
+                method:"delete",
+			    url:'{{url}}',
+			    data:JSON.stringify({'id':row.id}),
+                dataType: "json",
+			    async:true,
+			    success:function (res) {		
+                    $("#table").bootstrapTable('refresh');
+			    }
+		    }); 
+        }
+    }
+}
 
 function queryParams(params) {
     var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
@@ -51,6 +94,33 @@ function queryParams(params) {
     };
     return temp;
 };
+
+$('#btn_add').click(function () {
+    var count = $('#table').bootstrapTable('getData').length;
+    $('#table').bootstrapTable('insertRow', {index:count,row:{newFlag:"1"}});
+
+});
+
+$('#btn_delete').click(function () {
+      var rowids = getIdSelections()
+    //   $('#table').bootstrapTable('remove', {
+    //     field: 'id',
+    //     values: ids
+    //   })
+    //   $('#remove').prop('disabled', true)
+    if(confirm("您确定删除第"+rowids+"行吗？")) {
+        $.ajax({
+            method:"delete",
+			url:'{{url}}',
+			data: JSON.stringify({'ids': rowids}),
+            dataType: "json",
+			async:true,
+			success:function (res) {		
+                $("#table").bootstrapTable('refresh');
+			}
+		}); 
+    }
+});
 
 $('#table').bootstrapTable({
     method: 'get',
@@ -79,6 +149,7 @@ $('#table').bootstrapTable({
     sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
     columns: get_cols(),
     queryParams: queryParams,//请求服务器时所传的参数
+    striped: true,
 });
 </script>
 {% endblock %}

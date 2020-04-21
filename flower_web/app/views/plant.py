@@ -15,7 +15,7 @@ from app.models.user import User
 _plant = Blueprint('plant', __name__)
 
 @login_required
-@_plant.route("/plant/", methods=["POST", "GET"])
+@_plant.route("/plant/", methods=["POST", "GET", "DELETE"])
 def plant():
 	if request.method == 'GET':
 		headers = [{
@@ -41,7 +41,16 @@ def plant():
 			flash('Plant:%s has existed' % plantname)
 			return render_template('plant.html')
 
-		return render_template('list.html')        
+		return render_template('list.html')    
+
+	if request.method == 'DELETE':    
+		id = request.json['id']
+		plant = Plant.query.filter_by(id=id)
+		if plant:
+			db.session.delete(plant)
+			db.session.commit()
+
+		
 
 
 @login_required
