@@ -20,6 +20,8 @@ from app.views.main import main
 from app.views.curve import curve
 from app.views.login import log_in
 from app.views.plant import _plant
+from app.views.device import _device
+from app.views.user_manager import user_manager
 
 #创建app
 def create_app():
@@ -31,6 +33,8 @@ def create_app():
 	app.register_blueprint(curve)
 	app.register_blueprint(log_in)
 	app.register_blueprint(_plant)
+	app.register_blueprint(_device)
+	app.register_blueprint(user_manager)
 
 	db.init_app(app)
 	db.create_all(app=app)

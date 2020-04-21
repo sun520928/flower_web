@@ -12,11 +12,11 @@ from app.models.plant import Plant
 from app.models.identification import Identification
 from app.models.user import User
 
-_plant = Blueprint('plant', __name__)
+user_manager = Blueprint('user_manager', __name__)
 
 @login_required
-@_plant.route("/plant/", methods=["POST", "GET"])
-def plant():
+@user_manager.route("/user/", methods=["POST", "GET"])
+def user():
 	if request.method == 'GET':
 		headers = [{
 			'field': 'id',
@@ -24,37 +24,36 @@ def plant():
 			'align': 'center', 
 		}, {
 			'field': 'name',
-		    'title': '名称',
+			'title': '名称',
 			'align': 'center'
 		}, {
-			'field': 'desp',
-			'title': '描述',
+			'field': 'pwd',
+			'title': '密码',
 			'align': 'center',
 		}]
-
-		return render_template('list.html', url='/plant/info', headers=headers)
+		return render_template('list.html', url='/user/info', headers=headers)
 	if request.method == 'POST':
-		plantname = request.form.get('plantname')
-		desp = request.form.get('plantdesp')
-		plant = Plant.query.filter_by(name=plantname).first()
-		if plant:
-			flash('Plant:%s has existed' % plantname)
-			return render_template('plant.html')
+		userid = request.form.get('userid')
+		username = request.form.get('username')
+		pwd = request.form.get('userpwd')
+		user = User.query.filter_by(id=userid).first()
+		if user:
+			flash('User:%s has existed' % userid)
+			return render_template('user.html')
 
 		return render_template('list.html')        
 
-
 @login_required
-@_plant.route("/plant/info", methods=['GET'])
-def plant_info():
+@user_manager.route("/user/info", methods=['GET'])
+def user_info():
 	ret = {}
 	rows = []
-	plants = Plant.query.all()
-	for plant in plants:
+	users = User.query.all()
+	for user in users:
 		row = {}
-		row['id'] = plant.id
-		row['name'] = plant.name
-		row['desp'] = plant.description
+		row['id'] = user.id
+		row['name'] = user.name
+		row['pwd'] = user.pwd
 		rows.append(row)
 	ret['rows'] = rows
 	ret['total'] = len(rows)
@@ -67,4 +66,4 @@ def plant_info():
 
 
 
-    
+	

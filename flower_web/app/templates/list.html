@@ -44,6 +44,14 @@ function get_cols() {
     return cols;
 };
 
+function queryParams(params) {
+    var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+        pageNum: params.pageNumber,
+        pageSize: params.pageSize,
+    };
+    return temp;
+};
+
 $('#table').bootstrapTable({
     method: 'get',
     url: '{{url}}',
@@ -54,6 +62,8 @@ $('#table').bootstrapTable({
     toolbar: '#toolbar', //工具按钮用哪个容器
     striped: true, //是否显示行间隔色
     cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+    paginationShowPageGo: true,
+    showJumpto: true,
     pageNumber: 1, //初始化加载第10页，默认第一页
     pageSize: 10, //每页的记录行数（*）
     pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
@@ -68,7 +78,7 @@ $('#table').bootstrapTable({
     cardView: false, //是否显示详细视图
     sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
     columns: get_cols(),
-    pagination: true,
+    queryParams: queryParams,//请求服务器时所传的参数
 });
 </script>
 {% endblock %}

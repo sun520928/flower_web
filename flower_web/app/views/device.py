@@ -12,49 +12,43 @@ from app.models.plant import Plant
 from app.models.identification import Identification
 from app.models.user import User
 
-_plant = Blueprint('plant', __name__)
+_device = Blueprint('device', __name__)
 
 @login_required
-@_plant.route("/plant/", methods=["POST", "GET"])
-def plant():
+@_device.route("/device/", methods=["POST", "GET"])
+def device():
 	if request.method == 'GET':
 		headers = [{
 			'field': 'id',
 			'title': '序号',
 			'align': 'center', 
 		}, {
-			'field': 'name',
-		    'title': '名称',
-			'align': 'center'
-		}, {
 			'field': 'desp',
 			'title': '描述',
 			'align': 'center',
 		}]
 
-		return render_template('list.html', url='/plant/info', headers=headers)
+		return render_template('list.html', url='/device/info', headers=headers)
 	if request.method == 'POST':
-		plantname = request.form.get('plantname')
-		desp = request.form.get('plantdesp')
-		plant = Plant.query.filter_by(name=plantname).first()
-		if plant:
-			flash('Plant:%s has existed' % plantname)
-			return render_template('plant.html')
+		devid = request.form.get('devid')
+		desp = request.form.get('devdesp')
+		dev = Identification.query.filter_by(id=devid).first()
+		if dev:
+			flash('Device:%s has existed' % devid)
+			return render_template('device.html')
 
 		return render_template('list.html')        
 
-
 @login_required
-@_plant.route("/plant/info", methods=['GET'])
-def plant_info():
+@_device.route("/device/info", methods=['GET'])
+def device_info():
 	ret = {}
 	rows = []
-	plants = Plant.query.all()
-	for plant in plants:
+	devs = Identification.query.all()
+	for dev in devs:
 		row = {}
-		row['id'] = plant.id
-		row['name'] = plant.name
-		row['desp'] = plant.description
+		row['id'] = dev.id
+		row['desp'] = dev.description
 		rows.append(row)
 	ret['rows'] = rows
 	ret['total'] = len(rows)
