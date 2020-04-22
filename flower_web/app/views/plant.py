@@ -22,14 +22,17 @@ def plant():
 			'field': 'id',
 			'title': '序号',
 			'align': 'center', 
+			'edit': False,
 		}, {
 			'field': 'name',
 		    'title': '名称',
-			'align': 'center'
+			'align': 'center',
+			'edilt': True,
 		}, {
 			'field': 'desp',
 			'title': '描述',
 			'align': 'center',
+			'edit': True,
 		}]
 
 		return render_template('list.html', url='/plant/info', headers=headers)
