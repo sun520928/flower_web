@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify
+from flask import Blueprint, request, render_template, redirect, jsonify, flash
 from flask_login import login_required
 from sqlalchemy import func, desc
 
@@ -15,7 +15,7 @@ from app.models.user import User
 _plant = Blueprint('plant', __name__)
 
 @login_required
-@_plant.route("/plant/", methods=["POST", "GET", "DELETE"])
+@_plant.route("/plant/", methods=["GET"])
 def plant():
 	if request.method == 'GET':
 		headers = [{
@@ -25,26 +25,51 @@ def plant():
 			'edit': False,
 		}, {
 			'field': 'name',
-		    'title': '名称',
+			'title': '名称',
 			'align': 'center',
 			'edilt': True,
 		}, {
-			'field': 'desp',
+			'field': 'description',
 			'title': '描述',
 			'align': 'center',
 			'edit': True,
 		}]
-
 		return render_template('list.html', url='/plant/info', headers=headers)
-	if request.method == 'POST':
-		plantname = request.form.get('plantname')
-		desp = request.form.get('plantdesp')
-		plant = Plant.query.filter_by(name=plantname).first()
-		if plant:
-			flash('Plant:%s has existed' % plantname)
-			return render_template('plant.html')
 
-		return render_template('list.html')    
+
+@login_required
+@_plant.route("/plant/info", methods=["POST", "GET", "DELETE"])
+def plant_info():
+	if request.method == 'GET':
+		ret = {}
+		rows = []
+		plants = Plant.query.all()
+		for plant in plants:
+			row = {}
+			row['id'] = plant.id
+			row['name'] = plant.name
+			row['description'] = plant.description
+			rows.append(row)
+		ret['rows'] = rows
+		ret['total'] = len(rows)
+		return json.dumps(ret)
+
+	if request.method == 'POST':
+		id = request.json['id']
+		print(id)
+		plant = Plant.query.filter_by(id=request.json['id']).first()
+		if not plant:
+			flash('Plant:%s not existed' % request.json['id'])
+			return json.dumps({'sucess': False, 'code': 200, 'message': 'not existed id %s' %  request.json['id']})
+		# if not hasattr(plant, request.json['field']):
+		# 	flash('Plant has not attribute %s' % request.json['field'])
+		# 	return json.dumps({'sucess': False, 'code': 200, 'message': 'Plant has not attribute'})
+		
+		setattr(plant, request.json['field'], request.json['value'])
+		print(request.json)
+		print(plant)
+		db.session.commit()
+		return json.dumps({'sucess': True, 'code': 200})
 
 	if request.method == 'DELETE':    
 		id = request.json['id']
@@ -52,25 +77,9 @@ def plant():
 		if plant:
 			db.session.delete(plant)
 			db.session.commit()
-
-		
-
-
-@login_required
-@_plant.route("/plant/info", methods=['GET'])
-def plant_info():
-	ret = {}
-	rows = []
-	plants = Plant.query.all()
-	for plant in plants:
-		row = {}
-		row['id'] = plant.id
-		row['name'] = plant.name
-		row['desp'] = plant.description
-		rows.append(row)
-	ret['rows'] = rows
-	ret['total'] = len(rows)
-	return json.dumps(ret)
+			return jsonify({'sucess': True, 'code': 200})
+		flash('Plant:%s not existed' % data['id'])
+		return render_template('list.html')
 
 
 	
@@ -79,4 +88,4 @@ def plant_info():
 
 
 
-    
+	
