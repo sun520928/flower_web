@@ -60,17 +60,6 @@ def plant_info():
 		flag = True
 		message = ''
 		for record in request.json:
-			# id = request.json['id']
-			# plant = Plant.query.filter_by(id=request.json['id']).first()
-			# if not plant:
-			# 	flash('Plant:%s not existed' % request.json['id'])
-			# 	return json.dumps({'sucess': False, 'code': 200, 'message': 'not existed id %s' %  request.json['id']})
-			# if not hasattr(plant, request.json['field']):
-			# 	flash('Plant has not attribute %s' % request.json['field'])
-			# 	return json.dumps({'sucess': False, 'code': 200, 'message': 'Plant has not attribute %s' % request.json['field']})
-			# setattr(plant, request.json['field'], request.json['value'])
-			# db.session.commit()
-			# return json.dumps({'sucess': True, 'code': 200})
 			if not record['id']:
 				plant = Plant(record['name'], record['description'])
 				db.session.add(plant)

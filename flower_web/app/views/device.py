@@ -22,12 +22,13 @@ def device():
 			'field': 'id',
 			'title': '序号',
 			'align': 'center', 
-			'edit': False,
+			'editable': False,
 		}, {
 			'field': 'description',
 			'title': '描述',
 			'align': 'center',
-			'edit': False,
+			'editable': True,
+			'type': 'text',
 		}]
 
 		return render_template('list.html', url='/device/info', headers=headers)
@@ -42,26 +43,52 @@ def device_info():
 		for dev in devs:
 			row = {}
 			row['id'] = dev.id
-			row['desp'] = dev.description
+			row['description'] = dev.description
 			rows.append(row)
 		ret['rows'] = rows
 		ret['total'] = len(rows)
 		return json.dumps(ret)
 
 	if request.method == 'POST':
-		ident = Identification.query.filter_by(id=request.json['id']).first()
-		if not ident:
-			flash('Identification:%s not existed' % request.json['id'])
-			return json.dumps({'sucess': False, 'code': 200, 'message': 'not existed id %s' %  request.json['id']})
-		if not hasattr(plant, request.json['field']):
-			flash('Identification has not attribute %s' % request.json['field'])
-			return json.dumps({'sucess': False, 'code': 200, 'message': 'Identification has not attribute %s' % request.json['field']})
-		
-		setattr(ident, request.json['field'], request.json['value'])
-		db.session.commit()
-		return json.dumps({'sucess': True, 'code': 200})
+		flag = True
+		message = ''
+		for record in request.json:
+			if not record['id']:
+				ident = Identification(record['name'], record['description'])
+				db.session.add(ident)
+			else:
+				id = int(record['id'], base=10)
+				ident = Identification.query.filter_by(id=id).first()
+				if ident:
+					ident.name = record['name']
+					ident.description = record['description']
+				else:
+					flash('Identification:%s not existed' % id)
+					flag = False
+					message += 'Identification:%s not existed;' % id
+			db.session.commit()
+
+		return jsonify({'sucess': flag, 'code': 200, 'message': message})
 
 	if request.method == 'DELETE':    
+		ids = Identification.json['ids']
+		flag = True
+		message = ''
+		for id in ids:
+			ident = Identification.query.filter_by(id=id).first()
+			if ident:
+				db.session.delete(ident)
+				db.session.commit()
+			else:
+				flash('Identification:%s not existed' % id)
+				flag = False
+				message += 'Identification:%s not existed;' % id
+		
+		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+
+
+
+
 		ident = Identification.query.filter_by(id=request.json['id'])
 		if ident:
 			db.session.delete(ident)

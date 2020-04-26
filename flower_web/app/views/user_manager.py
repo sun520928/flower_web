@@ -22,29 +22,40 @@ def user():
 			'field': 'id',
 			'title': '序号',
 			'align': 'center', 
-			'edit': False,
+			'editable': False,
 		}, {
 			'field': 'name',
 			'title': '名称',
 			'align': 'center',
-			'edit': False,
+			'editable': False,
 		}, {
 			'field': 'pwd',
 			'title': '密码',
 			'align': 'center',
-			'edit': True,
+			'editable': True,
+			'type': 'text',
 		}]
 		return render_template('list.html', url='/user/info', headers=headers)
 	if request.method == 'POST':
-		userid = request.form.get('userid')
-		username = request.form.get('username')
-		pwd = request.form.get('userpwd')
-		user = User.query.filter_by(id=userid).first()
-		if user:
-			flash('User:%s has existed' % userid)
-			return render_template('user.html')
+		flag = True
+		message = ''
+		for record in request.json:
+			if not record['id']:
+				user = User(record['name'], record['pwd'])
+				db.session.add(user)
+			else:
+				id = int(record['id'], base=10)
+				user = User.query.filter_by(id=id).first()
+				if user:
+					user.name = record['name']
+					user.pwd = record['pwd']
+				else:
+					flash('User:%s not existed' % id)
+					flag = False
+					message += 'User:%s not existed;' % id
+			db.session.commit()
 
-		return render_template('list.html')        
+		return jsonify({'sucess': flag, 'code': 200, 'message': message})
 
 @login_required
 @user_manager.route("/user/info", methods=['GET', 'POST', 'DELETE'])
@@ -64,19 +75,44 @@ def user_info():
 		return json.dumps(ret)
 
 	if request.method == 'POST':
-		user = User.query.filter_by(id=request.json['id']).first()
-		if not user:
-			flash('User:%s not existed' % request.json['id'])
-			return json.dumps({'sucess': False, 'code': 200, 'message': 'not existed id %s' %  request.json['id']})
-		if not hasattr(user, request.json['field']):
-			flash('User has not attribute %s' % request.json['field'])
-			return json.dumps({'sucess': False, 'code': 200, 'message': 'User has not attribute %s' % request.json['field']})
-		
-		setattr(user, request.json['field'], request.json['value'])
-		db.session.commit()
-		return json.dumps({'sucess': True, 'code': 200})
+		flag = True
+		message = ''
+		for record in request.json:
+			if not record['id']:
+				user = User(record['name'], record['pwd'])
+				db.session.add(user)
+			else:
+				id = int(record['id'], base=10)
+				user = User.query.filter_by(id=id).first()
+				if user:
+					user.name = record['name']
+					user.pwd = record['pwd']
+				else:
+					flash('User:%s not existed' % id)
+					flag = False
+					message += 'User:%s not existed;' % id
+			db.session.commit()
 
-	if request.method == 'DELETE':    
+		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+
+	if request.method == 'DELETE':  
+		ids = request.json['ids']
+		flag = True
+		message = ''
+		for id in ids:
+			user = User.query.filter_by(id=id).first()
+			if user:
+				db.session.delete(user)
+				db.session.commit()
+			else:
+				flash('User:%s not existed' % id)
+				flag = False
+				message += 'User:%s not existed;' % id
+		
+		return jsonify({'sucess': flag, 'code': 200, 'message': message})  
+
+
+
 		user = User.query.filter_by(id=request.json['id'])
 		if user:
 			db.session.delete(user)
