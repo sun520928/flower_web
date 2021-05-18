@@ -3,7 +3,7 @@ import json
 import logging
 
 from flask_login import login_required, login_user, logout_user
-from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, session
 from app.models.user import User
 
 log_in = Blueprint('log_in', __name__)
@@ -24,12 +24,14 @@ def login():
 			return render_template('login.html')
 
 		login_user(user)
+		session['username'] = username
 		return render_template('curve.html')
 
 @login_required
 @log_in.route("/logout/")
 def logout():
 	logout_user()
+	session.pop('username', None)
 	flash('You were logged out.')
 	return redirect('/')
 
