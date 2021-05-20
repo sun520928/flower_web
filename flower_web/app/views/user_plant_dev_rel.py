@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, session
 from flask_login import login_required
 from sqlalchemy import func, desc
 
@@ -31,16 +31,34 @@ def relation():
 			'editable': True, 
 			'type': 'text',
 		}, {
+			'field': 'user_name',
+			'title': '用户名',
+			'align': 'center',
+			'editable': False, 
+			'type': 'text',
+		},{
 			'field': 'plant_id',
 			'title': '植物ID',
 			'align': 'center',
 			'editable': True,
 			'type': 'text',
 		}, {
+			'field': 'plant_name',
+			'title': '植物名',
+			'align': 'center',
+			'editable': False,
+			'type': 'text',
+		}, {
 			'field': 'identification_id',
 			'title': '设备ID',
 			'align': 'center',
 			'editable': True,
+			'type': 'text',
+		}, {
+			'field': 'identification_desp',
+			'title': '设备描述',
+			'align': 'center',
+			'editable': False,
 			'type': 'text',
 		}]
 		return render_template('list.html', url='/relation/info', headers=headers)
@@ -52,13 +70,20 @@ def relation_info():
 	if request.method == 'GET':
 		ret = {}
 		rows = []
-		rels = Relation.query.all()
+		user = User.query.filter_by(name=session['username']).first()
+		# rels = Relation.query.all()
+		rels = Relation.query.filter_by(user_id=user.id)
 		for rel in rels:
 			row = {}
 			row['id'] = rel.index
 			row['user_id'] = rel.user_id
+			row['user_name'] = session['username']
 			row['plant_id'] = rel.plant_id
+			plants = Plant.query.filter_by(id=rel.plant_id)
+			row['plant_name'] = plants[0].name
 			row['identification_id'] = rel.identification_id
+			devs = Identification.query.filter_by(id=rel.identification_id)
+			row['identification_desp'] = devs[0].description
 			rows.append(row)
 		ret['rows'] = rows
 		ret['total'] = len(rows)
