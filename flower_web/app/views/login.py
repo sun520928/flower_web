@@ -25,7 +25,8 @@ def login():
 
 		login_user(user)
 		session['username'] = username
-		return render_template('curve.html')
+		return redirect('/relation')
+		
 
 @login_required
 @log_in.route("/logout/")

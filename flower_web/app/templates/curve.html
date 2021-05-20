@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block body %}
+{{ super()}}
 	<!--为ECharts准备一个具备大小（宽高）的Dom-->
 	<div id="chart" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
 	<script type="text/javascript">
