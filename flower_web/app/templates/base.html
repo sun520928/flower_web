@@ -12,17 +12,25 @@
 	{% block js %}
 	<script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var location = window.location.href;
+			// var id = location.substring(location.lastIndexOf(":")+1);
+			var arr = location.split('/');
+			var id = arr[3];
+			$("#"+id).addClass("active");
+		})
+	</script>
 	{% endblock %}
-	
   </head>
 
   <body>
 	{% block body %}
-	<nav class="navbar navbar-inverse navbar-fixed-top">
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	  <div class="container">
 		<div class="navbar-header">
-		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-			<span class="sr-only">Toggle navigation</span>
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+			data-target="#navbar-collapse" aria-expanded="false">
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
@@ -32,12 +40,17 @@
 		<div id="navbar" class="collapse navbar-collapse">
 		  <ul class="nav navbar-nav">
 			<!-- <li class="active"><a href="/relation">Home</a></li> -->
-			<li><a href="/relation">Home</a></li>
-			<li><a href="/plant">Plant</a></li>
-			<li><a href="/device">Device</a></li>
-			<li><a href="/air">Curve</a></li>
-			<li><a href="/login">Sign in</a></li>
-			<li><a href="/logout">Sign up</a></li>
+			<li id="relation"><a href="/relation">Home</a></li>
+			<li id="plant"><a href="/plant">Plant</a></li>
+			<li id="device"><a href="/device">Device</a></li>
+			<li id="air"><a href="/air">Curve</a></li>
+			{% if username %}
+			<li id="login" class="disabled"><a href="/login">Sign in</a></li>
+			<li id="logout"><a href="/logout">Sign out</a></li>
+			{% else %}
+			<li id="login"><a href="/login">Sign in</a></li>
+			<li id="logout" class="disabled"><a href="/logout">Sign out</a></li>
+			{% endif %}
 		  </ul>
 		</div>
 	  </div>
@@ -51,6 +64,7 @@
 
 	</div>
 	{% endblock %}
+	
  
 
 
