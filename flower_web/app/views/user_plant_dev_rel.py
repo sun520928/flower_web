@@ -3,8 +3,8 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify, flash, session
-from flask_login import login_required
+from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask_login import login_required, current_user
 from sqlalchemy import func, desc
 
 from app import db
@@ -71,8 +71,8 @@ def relation_info():
 		ret = {}
 		rows = []
 		rels = []
-		if session.get('username'):
-			user = User.query.filter_by(name=session['username']).first()
+		if current_user.is_authenticated:
+			user = User.query.filter_by(name=current_user.name).first()
 			rels = Relation.query.filter_by(user_id=user.id)
 		else:
 			rels = Relation.query.all()

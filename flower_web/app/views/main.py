@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from flask import Blueprint, request, render_template, redirect, session
+from flask import Blueprint, request, render_template, redirect
 
 main = Blueprint('main', __name__)
 
