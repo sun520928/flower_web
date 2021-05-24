@@ -44,7 +44,7 @@
 			<li id="plant"><a href="/plant">Plant</a></li>
 			<li id="device"><a href="/device">Device</a></li>
 			<li id="air"><a href="/air">Curve</a></li>
-			{% if username %}
+			{% if current_user.is_authenticated %}
 			<li id="login" class="disabled"><a href="/login">Sign in</a></li>
 			<li id="logout"><a href="/logout">Sign out</a></li>
 			{% else %}
