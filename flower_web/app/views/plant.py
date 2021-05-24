@@ -64,15 +64,14 @@ def plant_info():
 				plant = Plant(record['name'], record['description'])
 				db.session.add(plant)
 			else:
-				id = int(record['id'], base=10)
-				plant = Plant.query.filter_by(id=id).first()
+				plant = Plant.query.filter_by(id=record['id']).first()
 				if plant:
 					plant.name = record['name']
 					plant.description = record['description']
 				else:
-					flash('Plant:%s not existed' % id)
-					flag = False
-					message += 'Plant:%s not existed;' % id
+					plant = Plant(record['name'], record['description'])
+					db.session.add(plant)
+
 			db.session.commit()
 
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})

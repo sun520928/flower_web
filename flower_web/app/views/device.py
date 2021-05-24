@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify
+from flask import Blueprint, request, render_template, redirect, jsonify, flash
 from flask_login import login_required
 from sqlalchemy import func, desc
 
@@ -54,18 +54,15 @@ def device_info():
 		message = ''
 		for record in request.json:
 			if not record['id']:
-				ident = Identification(record['name'], record['description'])
+				ident = Identification(record['description'])
 				db.session.add(ident)
 			else:
-				id = int(record['id'], base=10)
-				ident = Identification.query.filter_by(id=id).first()
+				ident = Identification.query.filter_by(id=record['id']).first()
 				if ident:
-					ident.name = record['name']
 					ident.description = record['description']
 				else:
-					flash('Identification:%s not existed' % id)
-					flag = False
-					message += 'Identification:%s not existed;' % id
+					ident = Identification(record['description'])
+					db.session.add(ident)
 			db.session.commit()
 
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})
@@ -87,18 +84,6 @@ def device_info():
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})
 
 
-
-
-		ident = Identification.query.filter_by(id=request.json['id'])
-		if ident:
-			db.session.delete(ident)
-			db.session.commit()
-			return jsonify({'sucess': True, 'code': 200})
-		flash('Identification:%s not existed' % request.json['id'])
-		return jsonify({'sucess': False, 'code': 200})
-
-
-	
 
 
 

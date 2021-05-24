@@ -128,22 +128,24 @@ $('#btn_add').click(function () {
     $('#table').bootstrapTable('insertRow', {
                 index: count,
                 row: {
-                    id: null,
-                    name: '',
-                    description: ''
+                    id: count + 1
+                    // id: count + 1,
+                    // name: '',
+                    // description: ''
                 }
     });
 });
 //新增
 $('#getTableData').click(function () {
-    let dataList = JSON.parse(JSON.stringify($('#table').bootstrapTable('getData')));
+    // let dataList = JSON.parse(JSON.stringify($('#table').bootstrapTable('getData')));
+    var dataList=$("#table").bootstrapTable('getSelections');
     //新增数组
     let data = [];
     for (var i = 0; i < dataList.length; i++) {
-        if (dataList[i].id == null) {
+        // if (dataList[i].id == null) {
             //新增数组填充
             data.push(dataList[i]);
-        }
+        // }
     }
     saveData(data);
 });
@@ -200,9 +202,9 @@ $('#table').bootstrapTable({
     queryParams: queryParams,//请求服务器时所传的参数 
     striped: true,
     onEditableSave: function (field, row, oldValue, $el) {
-        if(row.id){
-            saveData(row);
-        }  
+        // if(row.id){
+        //     saveData(row);
+        // }  
     }
 });
 

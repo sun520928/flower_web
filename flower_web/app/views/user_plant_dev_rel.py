@@ -70,20 +70,25 @@ def relation_info():
 	if request.method == 'GET':
 		ret = {}
 		rows = []
-		user = User.query.filter_by(name=session['username']).first()
-		# rels = Relation.query.all()
-		rels = Relation.query.filter_by(user_id=user.id)
+		rels = []
+		if session.get('username'):
+			user = User.query.filter_by(name=session['username']).first()
+			rels = Relation.query.filter_by(user_id=user.id)
+		else:
+			rels = Relation.query.all()
+		
 		for rel in rels:
 			row = {}
 			row['id'] = rel.index
 			row['user_id'] = rel.user_id
-			row['user_name'] = session['username']
+			user = User.query.filter_by(id=rel.user_id).first()
+			row['user_name'] = user.name
 			row['plant_id'] = rel.plant_id
-			plants = Plant.query.filter_by(id=rel.plant_id)
-			row['plant_name'] = plants[0].name
+			plant = Plant.query.filter_by(id=rel.plant_id).first()
+			row['plant_name'] = plant.name
 			row['identification_id'] = rel.identification_id
-			devs = Identification.query.filter_by(id=rel.identification_id)
-			row['identification_desp'] = devs[0].description
+			dev = Identification.query.filter_by(id=rel.identification_id).first()
+			row['identification_desp'] = dev.description
 			rows.append(row)
 		ret['rows'] = rows
 		ret['total'] = len(rows)
@@ -97,16 +102,14 @@ def relation_info():
 				rel = Relation(record['user_id'], record['plant_id'], record['identification_id'])
 				db.session.add(rel)
 			else:
-				id = int(record['id'], base=10)
-				rel = Relation.query.filter_by(index=id).first()
+				rel = Relation.query.filter_by(index=record['id']).first()
 				if rel:
 					rel.user_id = record['user_id']
 					rel.plant_id = record['plant_id']
 					rel.identification_id = record['identification_id']
 				else:
-					flash('Relation:%s not existed' % id)
-					flag = False
-					message += 'Relation:%s not existed;' % id
+					rel = Relation(record['user_id'], record['plant_id'], record['identification_id'])
+					db.session.add(rel)
 			db.session.commit()
 
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})
