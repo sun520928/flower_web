@@ -14,8 +14,9 @@ from app.models.identification import Identification
 
 curve = Blueprint('curve', __name__)
 
-@login_required
+
 @curve.route("/air/", methods=["POST", "GET"])
+@login_required
 def air():
 	if request.method == 'GET':
 		return render_template('curve.html')
@@ -50,8 +51,9 @@ def air():
 		return json.dumps(ret, ensure_ascii=False)
 
 
-@login_required
+
 @curve.route("/air/info", methods=["GET"])
+@login_required
 def info():
 	ret = {}
 	ret['code'] = 200

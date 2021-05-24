@@ -14,8 +14,9 @@ from app.models.user import User
 
 _device = Blueprint('device', __name__)
 
-@login_required
+
 @_device.route("/device/", methods=["GET"])
+@login_required
 def device():
 	if request.method == 'GET':
 		headers = [{
@@ -33,8 +34,9 @@ def device():
 
 		return render_template('list.html', url='/device/info', headers=headers)
 
-@login_required
+
 @_device.route("/device/info", methods=['GET', 'POST', 'DELETE'])
+@login_required
 def device_info():
 	if request.method == 'GET':
 		ret = {}
@@ -68,7 +70,7 @@ def device_info():
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})
 
 	if request.method == 'DELETE':    
-		ids = Identification.json['ids']
+		ids = request.json['ids']
 		flag = True
 		message = ''
 		for id in ids:

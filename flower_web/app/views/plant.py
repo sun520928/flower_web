@@ -14,8 +14,9 @@ from app.models.user import User
 
 _plant = Blueprint('plant', __name__)
 
-@login_required
+
 @_plant.route("/plant/", methods=["GET"])
+@login_required
 def plant():
 	if request.method == 'GET':
 		headers = [{
@@ -39,8 +40,9 @@ def plant():
 		return render_template('list.html', url='/plant/info', headers=headers)
 
 
-@login_required
+
 @_plant.route("/plant/info", methods=["POST", "GET", "DELETE"])
+@login_required
 def plant_info():
 	if request.method == 'GET':
 		ret = {}

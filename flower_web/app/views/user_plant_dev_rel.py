@@ -15,8 +15,9 @@ from app.models.relation import Relation
 
 relations = Blueprint('relation', __name__)
 
-@login_required
+
 @relations.route("/relation/", methods=["GET"])
+@login_required
 def relation():
 	if request.method == 'GET':
 		headers = [{
@@ -31,41 +32,42 @@ def relation():
 			'editable': True, 
 			'type': 'text',
 		}, {
-			'field': 'user_name',
-			'title': '用户名',
-			'align': 'center',
-			'editable': False, 
-			'type': 'text',
-		},{
+		# 	'field': 'user_name',
+		# 	'title': '用户名',
+		# 	'align': 'center',
+		# 	'editable': False, 
+		# 	'type': 'text',
+		# },{
 			'field': 'plant_id',
 			'title': '植物ID',
 			'align': 'center',
 			'editable': True,
 			'type': 'text',
 		}, {
-			'field': 'plant_name',
-			'title': '植物名',
-			'align': 'center',
-			'editable': False,
-			'type': 'text',
-		}, {
+		# 	'field': 'plant_name',
+		# 	'title': '植物名',
+		# 	'align': 'center',
+		# 	'editable': False,
+		# 	'type': 'text',
+		# }, {
 			'field': 'identification_id',
 			'title': '设备ID',
 			'align': 'center',
 			'editable': True,
 			'type': 'text',
-		}, {
-			'field': 'identification_desp',
-			'title': '设备描述',
-			'align': 'center',
-			'editable': False,
-			'type': 'text',
+		# }, {
+		# 	'field': 'identification_desp',
+		# 	'title': '设备描述',
+		# 	'align': 'center',
+		# 	'editable': False,
+		# 	'type': 'text',
 		}]
 		return render_template('list.html', url='/relation/info', headers=headers)
 
 
-@login_required
+
 @relations.route("/relation/info", methods=["POST", "GET", "DELETE"])
+@login_required
 def relation_info():
 	if request.method == 'GET':
 		ret = {}
