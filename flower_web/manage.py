@@ -9,9 +9,6 @@ from logs import setup_log
 from flask_login import LoginManager
 from app.models.user import User
 
-HOST = '0.0.0.0'
-PORT = 4000
-
 loginmanager = LoginManager()
 loginmanager.session_protection = 'basic'
 loginmanager.login_view = 'log_in.login'
@@ -30,7 +27,5 @@ def load_user(id):
     return User.query.get(int(id))
 
 if __name__ == "__main__":
-    #manager.run(host=HOST, port=PORT)
     setup_log()
-    # app.run(host=HOST, port=PORT, debug=True)
     app.run(debug=True)
