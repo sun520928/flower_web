@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify
+from flask import Blueprint, request, render_template, redirect, jsonify, flash
 from flask_login import login_required
 from sqlalchemy import func, desc
 
@@ -110,18 +110,6 @@ def user_info():
 				message += 'User:%s not existed;' % id
 		
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})  
-
-
-
-		user = User.query.filter_by(id=request.json['id'])
-		if user:
-			db.session.delete(user)
-			db.session.commit()
-			return jsonify({'sucess': True, 'code': 200})
-		flash('User:%s not existed' % id)
-		return jsonify({'sucess': False, 'code': 200, 'message': 'User:%s not existed' % request.json['id']})
-
-
 
 	
 
