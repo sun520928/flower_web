@@ -24,43 +24,29 @@ def relation():
 			'field': 'id',
 			'title': '序号',
 			'align': 'center', 
-			'editable': False
+			'editable': False,
+			'url': ''
 		}, {
 			'field': 'user_id',
 			'title': '用户ID',
 			'align': 'center',
 			'editable': True, 
-			'type': 'text',
+			'type': 'select',
+			'url': '/user/info',
 		}, {
-		# 	'field': 'user_name',
-		# 	'title': '用户名',
-		# 	'align': 'center',
-		# 	'editable': False, 
-		# 	'type': 'text',
-		# },{
 			'field': 'plant_id',
 			'title': '植物ID',
 			'align': 'center',
 			'editable': True,
-			'type': 'text',
+			'type': 'select',
+			'url': '/plant/info',
 		}, {
-		# 	'field': 'plant_name',
-		# 	'title': '植物名',
-		# 	'align': 'center',
-		# 	'editable': False,
-		# 	'type': 'text',
-		# }, {
 			'field': 'identification_id',
 			'title': '设备ID',
 			'align': 'center',
 			'editable': True,
-			'type': 'text',
-		# }, {
-		# 	'field': 'identification_desp',
-		# 	'title': '设备描述',
-		# 	'align': 'center',
-		# 	'editable': False,
-		# 	'type': 'text',
+			'type': 'select',
+			'url': '/device/info',
 		}]
 		return render_template('list.html', url='/relation/info', headers=headers)
 

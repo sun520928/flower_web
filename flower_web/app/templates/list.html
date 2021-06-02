@@ -13,7 +13,6 @@
 
 {% block js %}
 {{super()}}
-{{super()}}
 <script src="{{ url_for('static', filename='bootstrap-table/dist/bootstrap-table.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap-table/dist/extensions/editable/bootstrap-table-editable.js') }}"></script>
@@ -64,15 +63,40 @@
 function get_cols() {
     var cols_json = JSON.parse('{{headers|tojson}}');
     var cols = [];
-    cols.push({title: 'state', field: 'state', checkbox: true, align: 'center', valign: 'middle', editable: false});
+    cols.push({title: 'state', field: 'state', checkbox: true, align: 'center', valign: 'middle', editable: false, url: ''});
     for(var i=0; i < cols_json.length; i++) {
-        cols.push({title: cols_json[i]['title'], field: cols_json[i]['field'], align: cols_json[i]['align'], editable: cols_json[i]['editable']?
-        {type: cols_json[i]['type'], title:cols_json[i]['title']} : false});
+        cols.push({
+            title: cols_json[i]['title'], 
+            field: cols_json[i]['field'], 
+            align: cols_json[i]['align'], 
+            url:  cols_json[i]['editable']?cols_json[i]['url']:'',
+            editable: cols_json[i]['editable']?{
+                type: cols_json[i]['type'], 
+                title: cols_json[i]['title'],
+                source: sourceData(cols_json[i]['url']),
+            }: false, 
+            });
     }
     cols.push({title: '操作', align: 'center', valign: 'middle', formatter:"operateFormatter", editable: false})
     return cols;
 };
 
+function sourceData(url) {
+    var result = [];
+    $.ajax({
+        url: url,
+        async: false,
+        type: "get",
+        data: {},
+        success: function (data, status) {
+            var eachData = JSON.parse(data).rows;
+            $.each(eachData, function (key, value) {
+                result.push({ value: value.id, text: value.name || value.description});
+            });
+        }
+    });
+    return result;
+}
 function operateFormatter(value, row, index) {
     // return [
     // '<a href="javascript:modify(' + row.id + ')" title="modify">' +
@@ -205,7 +229,8 @@ $('#table').bootstrapTable({
         // if(row.id){
         //     saveData(row);
         // }  
-    }
+    },
+    
 });
 
 function saveData(editData) {
@@ -222,5 +247,11 @@ function saveData(editData) {
 			}
 	});      
 }
+
+
+
+
+
+
 </script>
 {% endblock %}
