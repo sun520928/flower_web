@@ -42,6 +42,7 @@ class BaseConfig(object):
 	
 	DEBUG = True
 
+	SESSION_PERMANENT = True
 
 class ProductionConfig(BaseConfig):
 	pass
