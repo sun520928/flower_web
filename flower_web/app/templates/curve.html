@@ -53,7 +53,7 @@
 	});
 
 	// 异步加载数据
-	$.get('/air/info').done(function (data) {
+	$.get('/air/info?device_id={{ device_id }}').done(function (data) {
 		json_data = JSON.parse(data)
 
 		myChart.setOption({

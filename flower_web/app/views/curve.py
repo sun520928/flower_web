@@ -3,9 +3,10 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify
+from flask import Blueprint, request, render_template, redirect, jsonify, g
 from flask_login import login_required
 from sqlalchemy import func, desc
+
 
 from app import db
 from app.models.air import Air
@@ -19,7 +20,15 @@ curve = Blueprint('curve', __name__)
 @login_required
 def air():
 	if request.method == 'GET':
-		return render_template('curve.html')
+		device_id = request.args.to_dict().get("device_id")
+
+		devs = []
+		devices = Identification.query.all()
+		for dev in devices:
+			devs.append({'id': dev.id, 'description': dev.description})
+		g.devices = devs
+
+		return render_template('curve.html', device_id=device_id)
 		
 	if request.method == 'POST':
 		ret = {}
@@ -51,17 +60,17 @@ def air():
 		return json.dumps(ret, ensure_ascii=False)
 
 
-
 @curve.route("/air/info", methods=["GET"])
 @login_required
 def info():
 	device_id = request.args.to_dict().get("device_id")
-	if not device_id:
-		device_id = 1
 	ret = {}
 	ret['code'] = 200
 	ret['success'] = True
 	ret['result'] = {}
+
+	if not device_id:
+		ret['success'] = False
 
 	airs = db.session.query(
 		func.max(Air.humidity).label('max_humidity'),

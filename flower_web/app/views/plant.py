@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, g
 from flask_login import login_required
 from sqlalchemy import func, desc
 
@@ -18,6 +18,11 @@ _plant = Blueprint('plant', __name__)
 @_plant.route("/plant/", methods=["GET"])
 @login_required
 def plant():
+	devs = []
+	devices = Identification.query.all()
+	for dev in devices:
+		devs.append({'id': dev.id, 'description': dev.description})
+	g.devices = devs	
 	if request.method == 'GET':
 		headers = [{
 			'field': 'id',

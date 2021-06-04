@@ -4,7 +4,7 @@ import logging
 
 from app import db
 from flask_login import login_required, login_user, logout_user
-from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, g
 from app.models.user import User
 
 registuser = Blueprint('registuser', __name__)

@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, g
 from flask_login import login_required, current_user
 from sqlalchemy import func, desc
 
@@ -19,6 +19,12 @@ relations = Blueprint('relation', __name__)
 @relations.route("/relation/", methods=["GET"])
 @login_required
 def relation():
+	devs = []
+	devices = Identification.query.all()
+	for dev in devices:
+		devs.append({'id': dev.id, 'description': dev.description})
+	g.devices = devs
+
 	if request.method == 'GET':
 		headers = [{
 			'field': 'id',
@@ -50,11 +56,15 @@ def relation():
 		}]
 		return render_template('list.html', url='/relation/info', headers=headers)
 
-
-
 @relations.route("/relation/info", methods=["POST", "GET", "DELETE"])
 @login_required
 def relation_info():
+	devs = []
+	devices = Identification.query.all()
+	for dev in devices:
+		devs.append({'id': dev.id, 'description': dev.description})
+	g.devices = devs
+
 	if request.method == 'GET':
 		ret = {}
 		rows = []

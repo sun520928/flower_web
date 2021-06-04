@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from app.views.device import device
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, g
 
 from app.models.identification import Identification
 
@@ -15,7 +15,11 @@ def index():
 	for dev in devices:
 		devs.append({'id': dev.id, 'description': dev.description})
 	content['devices'] = devs
-	return render_template('base.html', **content)
+
+	g.devices = devs
+
+	# return render_template('base.html', **content)
+	return render_template('base.html')
 
 
 

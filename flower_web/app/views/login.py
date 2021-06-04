@@ -3,13 +3,20 @@ import json
 import logging
 
 from flask_login import login_required, login_user, logout_user
-from flask import Blueprint, request, render_template, redirect, jsonify, flash
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, g
 from app.models.user import User
+from app.models.identification import Identification
 
 log_in = Blueprint('log_in', __name__)
 
 @log_in.route("/login/", methods=["POST", "GET"])
 def login():
+	devs = []
+	devices = Identification.query.all()
+	for dev in devices:
+		devs.append({'id': dev.id, 'description': dev.description})
+	g.devices = devs
+	
 	if request.method == 'GET':
 		return render_template('login.html')
 	else:
@@ -24,8 +31,8 @@ def login():
 			return render_template('login.html')
 
 		login_user(user)
-		# return redirect('/relation')
-		return redirect('/')
+		return redirect('/relation')
+
 		
 
 @login_required
