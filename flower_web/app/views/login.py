@@ -24,7 +24,8 @@ def login():
 			return render_template('login.html')
 
 		login_user(user)
-		return redirect('/relation')
+		# return redirect('/relation')
+		return redirect('/')
 		
 
 @login_required

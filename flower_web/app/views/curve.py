@@ -20,6 +20,7 @@ curve = Blueprint('curve', __name__)
 def air():
 	if request.method == 'GET':
 		return render_template('curve.html')
+		
 	if request.method == 'POST':
 		ret = {}
 		ret['code'] = 200
@@ -35,7 +36,6 @@ def air():
 		celsius = float(data.get('celsius'))
 		identification_id = int(data.get('id'))
 		
-
 		if humidity and fahrenheit and celsius and identification_id:
 			identi = Identification.query.filter_by(
 				id=identification_id).first()
@@ -55,6 +55,9 @@ def air():
 @curve.route("/air/info", methods=["GET"])
 @login_required
 def info():
+	device_id = request.args.to_dict().get("device_id")
+	if not device_id:
+		device_id = 1
 	ret = {}
 	ret['code'] = 200
 	ret['success'] = True
@@ -66,7 +69,7 @@ def info():
 		func.max(Air.celsius).label('max_celsius'),
 		func.min(Air.celsius).label('min_celsius'),
 		func.date_format(Air.update_date, "%Y-%m-%d").label('date')).group_by(
-			func.date_format(Air.update_date, "%Y-%m-%d").label('date')).all()
+			func.date_format(Air.update_date, "%Y-%m-%d").label('date')).filter_by(identification_id=device_id).all()
 	data = dict()
 	data['max_humidity'] = list()
 	data['min_humidity'] = list()
