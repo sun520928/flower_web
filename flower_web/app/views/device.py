@@ -6,10 +6,12 @@ import json
 from flask import Blueprint, request, render_template, redirect, jsonify, flash, g
 from flask_login import login_required
 from sqlalchemy import func, desc
+from sqlalchemy.orm import relation
 
 from app import db
 from app.models.plant import Plant
 from app.models.identification import Identification
+from app.models.relation import Relation
 from app.models.user import User
 
 _device = Blueprint('device', __name__)
@@ -81,13 +83,17 @@ def device_info():
 		message = ''
 		for id in ids:
 			ident = Identification.query.filter_by(id=id).first()
-			if ident:
+			rel = Relation.query.filter_by(identification_id=id).first()
+			if ident and not rel:
 				db.session.delete(ident)
 				db.session.commit()
 			else:
-				flash('Identification:%s not existed' % id)
+				if rel:
+					message = 'Device:%d is used' % id
+				if not ident:
+					message = 'Identification:%s not existed' % id
+				flash(message)
 				flag = False
-				message += 'Identification:%s not existed;' % id
 		
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})
 

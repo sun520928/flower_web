@@ -10,6 +10,7 @@ from sqlalchemy import func, desc
 from app import db
 from app.models.plant import Plant
 from app.models.identification import Identification
+from app.models.relation import Relation
 from app.models.user import User
 
 _plant = Blueprint('plant', __name__)
@@ -89,13 +90,18 @@ def plant_info():
 		message = ''
 		for id in ids:
 			plant = Plant.query.filter_by(id=id).first()
-			if plant:
+			rel = Relation.query.filter_by(plant_id=id).first()
+			if plant and not rel:
 				db.session.delete(plant)
 				db.session.commit()
 			else:
-				flash('Plant:%s not existed' % id)
+				if rel:
+					message = 'Plant:%d is used' % id
+				if not plant:
+					message = 'Plant:%s not existed;' % id
+					
+				flash(message)
 				flag = False
-				message += 'Plant:%s not existed;' % id
 		
 		return jsonify({'sucess': flag, 'code': 200, 'message': message})
 
