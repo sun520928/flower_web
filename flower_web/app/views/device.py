@@ -75,7 +75,7 @@ def device_info():
 					db.session.add(ident)
 			db.session.commit()
 
-		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+		return jsonify({'success': flag, 'code': 200, 'message': message})
 
 	if request.method == 'DELETE':    
 		ids = request.json['ids']
@@ -92,10 +92,9 @@ def device_info():
 					message = 'Device:%d is used' % id
 				if not ident:
 					message = 'Identification:%s not existed' % id
-				flash(message)
 				flag = False
 		
-		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+		return jsonify({'success': flag, 'code': 200, 'message': message})
 
 
 

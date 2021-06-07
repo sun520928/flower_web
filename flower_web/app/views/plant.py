@@ -82,7 +82,7 @@ def plant_info():
 
 			db.session.commit()
 
-		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+		return jsonify({'success': flag, 'code': 200, 'message': message})
 				
 	if request.method == 'DELETE':    
 		ids = request.json['ids']
@@ -99,11 +99,10 @@ def plant_info():
 					message = 'Plant:%d is used' % id
 				if not plant:
 					message = 'Plant:%s not existed;' % id
-					
-				flash(message)
+
 				flag = False
 		
-		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+		return jsonify({'success': flag, 'code': 200, 'message': message})
 
 
 	

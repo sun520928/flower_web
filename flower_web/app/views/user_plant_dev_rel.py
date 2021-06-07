@@ -110,7 +110,7 @@ def relation_info():
 					db.session.add(rel)
 			db.session.commit()
 
-		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+		return jsonify({'success': flag, 'code': 200, 'message': message})
 				
 	if request.method == 'DELETE':    
 		ids = request.json['ids']
@@ -122,11 +122,10 @@ def relation_info():
 				db.session.delete(rel)
 				db.session.commit()
 			else:
-				flash('Relation:%s not existed' % id)
 				flag = False
 				message += 'Relation:%s not existed;' % id
 		
-		return jsonify({'sucess': flag, 'code': 200, 'message': message})
+		return jsonify({'success': flag, 'code': 200, 'message': message})
 
 
 	

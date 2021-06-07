@@ -46,6 +46,7 @@
         </button> -->
     </div>
     <table id="table"></table>
+
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul class="flash">
@@ -134,7 +135,12 @@ function remove(rowid) {
             dataType: "json",
 			async: true,
 			success: function (res) {		
+                if(res.success == false) {
+                    alert(res.message);
+                }
+                else {
                     $("#table").bootstrapTable('refresh');
+                }
 			}
 		}); 
     }
@@ -190,9 +196,16 @@ $('#btn_delete').click(function () {
             dataType: "json",
             contentType: "application/json",
 			async:true,
-			success:function (res) {		
-                $("#table").bootstrapTable('refresh');
+			success:function (res) {	
+                if(res.success == false) {
+                    alert(res.message);
+                }
+                else {
+                    $("#table").bootstrapTable('refresh');
+                }
+                
 			}
+
 		}); 
     }
 });
