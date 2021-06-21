@@ -17,7 +17,7 @@ curve = Blueprint('curve', __name__)
 
 
 @curve.route("/air/", methods=["POST", "GET"])
-@login_required
+# @login_required
 def air():
 	if request.method == 'GET':
 		device_id = request.args.to_dict().get("device_id")
