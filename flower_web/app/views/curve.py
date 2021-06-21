@@ -15,49 +15,47 @@ from app.models.identification import Identification
 
 curve = Blueprint('curve', __name__)
 
-
-@curve.route("/air/", methods=["POST", "GET"])
-# @login_required
+@curve.route("/air/", methods=["GET"])
+@login_required
 def air():
-	if request.method == 'GET':
-		device_id = request.args.to_dict().get("device_id")
+	device_id = request.args.to_dict().get("device_id")
+	devs = []
+	devices = Identification.query.all()
+	for dev in devices:
+		devs.append({'id': dev.id, 'description': dev.description})
+	g.devices = devs
 
-		devs = []
-		devices = Identification.query.all()
-		for dev in devices:
-			devs.append({'id': dev.id, 'description': dev.description})
-		g.devices = devs
-
-		return render_template('curve.html', device_id=device_id)
+	return render_template('curve.html', device_id=device_id)
 		
-	if request.method == 'POST':
-		ret = {}
-		ret['code'] = 200
-		ret['success'] = True
-		ret['result'] = {}
+@curve.route("/air/", methods=["POST"])
+def air_post():
+	ret = {}
 
-		data_str = request.get_data()
-		logging.debug('recv POST: %s' % data_str)
-		data = json.loads(data_str.decode("utf-8"))
+	ret['code'] = 200
+	ret['success'] = True
+	ret['result'] = {}
 
-		humidity = float(data.get('humidity'))
-		fahrenheit = float(data.get('fahrenheit'))
-		celsius = float(data.get('celsius'))
-		identification_id = int(data.get('id'))
+	data_str = request.get_data()
+	logging.debug('recv POST: %s' % data_str)
+	data = json.loads(data_str.decode("utf-8"))
+
+	humidity = float(data.get('humidity'))
+	fahrenheit = float(data.get('fahrenheit'))
+	celsius = float(data.get('celsius'))
+	identification_id = int(data.get('id'))
 		
-		if humidity and fahrenheit and celsius and identification_id:
-			identi = Identification.query.filter_by(
-				id=identification_id).first()
-			if not identi:
-				ret['success'] = False
-				logging.info('identification_id=%d not existed.' % identification_id)
-			else:
-				air = Air(humidity, fahrenheit, celsius, identification_id)
-				db.session.add(air)
-				db.session.commit()
-				logging.info('add air success.Air=%s' % air)
-
-		return json.dumps(ret, ensure_ascii=False)
+	if humidity and fahrenheit and celsius and identification_id:
+		identi = Identification.query.filter_by(
+			id=identification_id).first()
+		if not identi:
+			ret['success'] = False
+			logging.info('identification_id=%d not existed.' % identification_id)
+		else:
+			air = Air(humidity, fahrenheit, celsius, identification_id)
+			db.session.add(air)
+			db.session.commit()
+			logging.info('add air success.Air=%s' % air)
+	return json.dumps(ret, ensure_ascii=False)
 
 
 @curve.route("/air/info", methods=["GET"])
